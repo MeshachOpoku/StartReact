@@ -1,17 +1,39 @@
 import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import ReactDom from 'react-dom';
+import SeasonDisplay from './SeasonDisplay';
+import Spinner from './Spinner';
+//creating a component 
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+class App extends React.Component{
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+
+state={lat:null,loc:null}
+//function to simplify code
+componentDidMount(){
+ 
+window.navigator.geolocation.getCurrentPosition(
+position=>{this.setState({lat:position.coords.latitude,
+  long:position.coords.longitude,alt:position.coords.altitude,
+  acc:position.coords.accuracy,altacc:position.coords.altitudeAccuracy,
+  head:position.coords.heading,llat:position.coords,llong:position.coords.longitude,
+  sped:position.coords.speed})},e=>{this.setState({loc:e.message})}
+  
+)
+}
+
+//creating render method
+render(){ 
+if(this.state.loc&&!this.state.lat)
+{return<div>Error:{this.state.loc}</div>}
+if(!this.state.loc&&!this.state.lat)
+{ return <div><SeasonDisplay lat={this.state.lat}></SeasonDisplay></div>}
+//return <div><Spinner message='Please accept location '/> </div>
+return <div>Loading</div>
+
+
+}
+}
+ReactDom.render(
+   <App/>,document.querySelector('#root')
+
+)
